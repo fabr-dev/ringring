@@ -11,5 +11,9 @@
   },
   "devDependencies": {
     "electron": "^19.0.4"
+  },
+  "dependencies": {
+    "opencv4nodejs": "^5.6.0",
+    "puppeteer": "^14.4.1"
   }
 }
