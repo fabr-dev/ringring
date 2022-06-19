@@ -20,7 +20,6 @@ async function capture() {
         let frame = videoCapture.read().flip(1); // reads the image from the video capture every second
         cv.imshow('video', frame);
         const key = cv.waitKey(delay);
-        console.log(key)
         done = key !== -1 && key === 32;
     }   
 }
