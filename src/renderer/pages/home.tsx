@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
 import IconButton from '@mui/material/IconButton';
-import CallEndIcon from '@mui/icons-material/CallEnd';
 import PhoneIcon from '@mui/icons-material/Phone';
+
+import { CallingDialog, IncomingCallDialog } from '../dialogs';
 
 enum STATE {
   IDLE,
@@ -18,56 +17,20 @@ const styles = {
     backgroundColor: disabled ? 'gray' : 'green',
     color: 'white',
   }),
-  endCallButton: {
-    backgroundColor: 'red',
-    color: 'white',
-  },
-  callingDialogButDiv: {
-    display: 'flex',
-    justifyContent: 'center',
-    padding: '5px',
-  },
 };
-
-interface CallDialogProps {
-  open: boolean;
-  onClose: () => void;
-}
-
-function CallingDialog(props: CallDialogProps) {
-  const { onClose, open } = props;
-
-  const handleClose = () => {
-    onClose();
-  };
-
-  // Wait ten seconds or fails call
-  setTimeout(() => {
-    handleClose();
-  }, 10000);
-
-  return (
-    <Dialog onClose={handleClose} open={open}>
-      <DialogTitle>Calling...</DialogTitle>
-      <div style={styles.callingDialogButDiv}>
-        <IconButton
-          aria-label="phone"
-          size="small"
-          style={styles.endCallButton}
-          onClick={handleClose}
-        >
-          <CallEndIcon />
-        </IconButton>
-      </div>
-    </Dialog>
-  );
-}
 
 export default function Home() {
   const navigate = useNavigate();
   const [callState, setCallState] = React.useState(STATE.IDLE);
 
   // TODO: Listen for calls
+  // if (callState === STATE.IDLE) {
+  //   setTimeout(() => {
+  //     if (callState === STATE.IDLE) {
+  //       setCallState(STATE.INCOMING_CALL);
+  //     }
+  //   }, 3000);
+  // }
 
   const handleMakeCall = () => {
     // TODO: Initiate the call
@@ -83,7 +46,17 @@ export default function Home() {
     setCallState(STATE.IDLE);
   };
 
+  const handleIncomingCall = (answered: boolean) => () => {
+    if (answered) {
+      // TODO: Allow incoming call
+      navigate('/chat');
+      return;
+    }
+    setCallState(STATE.IDLE);
+  };
+
   const openCallDialog = callState == STATE.CALLING;
+  const openIncomingCallDialog = callState === STATE.INCOMING_CALL;
 
   return (
     <div>
@@ -108,6 +81,11 @@ export default function Home() {
         </IconButton>
       </div>
       <CallingDialog open={openCallDialog} onClose={handleEndCallAttempt} />
+      <IncomingCallDialog
+        open={openIncomingCallDialog}
+        onAnswer={handleIncomingCall(true)}
+        onHangup={handleIncomingCall(false)}
+      />
     </div>
   );
 }
