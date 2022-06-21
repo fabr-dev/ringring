@@ -8,7 +8,7 @@ if (
   fs.existsSync(webpackPaths.appNodeModulesPath)
 ) {
   const extension = process.platform === 'win32' ? '.cmd' : '';
-  const electronRebuildCmd = `../../node_modules/.bin/electron-rebuild${extension} --force --types prod,dev,optional --module-dir .`;
+  const electronRebuildCmd = `../../node_modules/.bin/electron-rebuild${extension} -f -w opencv4nodejs`;
   const cmd =
     process.platform === 'win32'
       ? electronRebuildCmd.replace(/\//g, '\\')
