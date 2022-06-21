@@ -14,6 +14,8 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import FrameSender from '../videoCapture/frameSender';
+import * as cv from 'opencv4nodejs';
 
 export default class AppUpdater {
   constructor() {
@@ -22,6 +24,8 @@ export default class AppUpdater {
     autoUpdater.checkForUpdatesAndNotify();
   }
 }
+
+const frameSender = FrameSender.getInstance();
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -45,19 +49,27 @@ const createWindow = async () => {
     height: 728,
     icon: getAssetPath('icon.png'),
     webPreferences: {
-      preload: app.isPackaged
-        ? path.join(__dirname, 'preload.js')
-        : path.join(__dirname, '../../.erb/dll/preload.js'),
+      preload: frameSender.getPreloadPath(),
     },
   });
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
+
+  mainWindow.webContents.openDevTools();
 
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
     mainWindow.show();
+    let imageMat = cv.imread(getAssetPath('icon.png'));
+    imageMat =
+      imageMat.channels === 1
+        ? imageMat.cvtColor(cv.COLOR_GRAY2RGBA)
+        : imageMat.cvtColor(cv.COLOR_BGR2RGBA);
+    console.log(imageMat);
+    frameSender.setBrowserWindow(mainWindow);
+    frameSender.sendFrame({ buf: imageMat.getData(), row: 256, col: 256 });
   });
 
   mainWindow.on('closed', () => {

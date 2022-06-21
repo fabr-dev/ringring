@@ -3,14 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import PhoneIcon from '@mui/icons-material/Phone';
-
 import { CallingDialog, IncomingCallDialog } from '../dialogs';
+import { FrameReceiver } from 'videoCapture/frameReceiver';
 
 enum STATE {
   IDLE,
   CALLING,
   INCOMING_CALL,
 }
+
+const frameReceiver = new FrameReceiver();
 
 const styles = {
   callButton: (disabled: boolean) => ({

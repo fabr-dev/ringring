@@ -12,6 +12,9 @@ declare global {
         once(channel: string, func: (...args: unknown[]) => void): void;
       };
     };
+    framesAPI: {
+      handleFrame: (callback: any) => void;
+    };
   }
 }
 
