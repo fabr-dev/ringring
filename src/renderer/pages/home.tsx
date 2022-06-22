@@ -4,7 +4,8 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import PhoneIcon from '@mui/icons-material/Phone';
 import { CallingDialog, IncomingCallDialog } from '../dialogs';
-import { FrameReceiver } from 'videoCapture/frameReceiver';
+import { FrameReceiver, FrameListener } from 'videoCapture/frameReceiver';
+import Canvas from '../../components/canvas';
 
 enum STATE {
   IDLE,
@@ -21,9 +22,27 @@ const styles = {
   }),
 };
 
+const draw = (ctx: any, frameCount: any) => {
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+  ctx.fillStyle = '#000000'
+  ctx.beginPath()
+  ctx.arc(50, 100, 20*Math.sin(frameCount*0.05)**2, 0, 2*Math.PI)
+  ctx.fill()
+}
+
 export default function Home() {
   const navigate = useNavigate();
   const [callState, setCallState] = React.useState(STATE.IDLE);
+  const [frame, setFrame] = React.useState(null);
+
+  React.useEffect(()=>{
+    const frameListener: FrameListener = {
+      onFrame: (frame: any) => {
+        setFrame(frame);
+      }
+    }
+    frameReceiver.addFrameListener(frameListener);
+  }, [])
 
   // TODO: Listen for calls
   // if (callState === STATE.IDLE) {
@@ -63,18 +82,19 @@ export default function Home() {
   return (
     <div>
       <div className="Video">
-        <Box
+        {/* <Box
           sx={{
             width: 400,
             height: 300,
             backgroundColor: 'black',
           }}
-        />
+        /> */}
+        <Canvas frame={frame}/>
       </div>
       <div className="Hello">
         <IconButton
           aria-label="phone"
-          size="large"
+          size="large" 
           disabled={openCallDialog}
           style={styles.callButton(openCallDialog)}
           onClick={handleMakeCall}

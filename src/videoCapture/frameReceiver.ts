@@ -12,8 +12,10 @@ export class FrameReceiver {
         value.row,
         value.col
       );
-      console.log(value.buf);
-      console.log(imgData);
+      console.log('Frame received!!');
+      for (const listener of this.listeners){
+        listener.onFrame(imgData);
+      }
     });
   }
 

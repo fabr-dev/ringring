@@ -16,6 +16,7 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import FrameSender from '../videoCapture/frameSender';
 import * as cv from 'opencv4nodejs';
+import capture from '../videoCapture/videoCapture';
 
 export default class AppUpdater {
   constructor() {
@@ -62,14 +63,15 @@ const createWindow = async () => {
       throw new Error('"mainWindow" is not defined');
     }
     mainWindow.show();
-    let imageMat = cv.imread(getAssetPath('icon.png'));
-    imageMat =
-      imageMat.channels === 1
-        ? imageMat.cvtColor(cv.COLOR_GRAY2RGBA)
-        : imageMat.cvtColor(cv.COLOR_BGR2RGBA);
-    console.log(imageMat);
+    // let imageMat = cv.imread(getAssetPath('icon.png'));
+    // imageMat =
+    //   imageMat.channels === 1
+    //     ? imageMat.cvtColor(cv.COLOR_GRAY2RGBA)
+    //     : imageMat.cvtColor(cv.COLOR_BGR2RGBA);
+    // console.log(imageMat);
     frameSender.setBrowserWindow(mainWindow);
-    frameSender.sendFrame({ buf: imageMat.getData(), row: 256, col: 256 });
+    // setInterval(() => frameSender.sendFrame({ buf: imageMat.getData(), row: 256, col: 256 }), 200);
+    capture(frameSender);
   });
 
   mainWindow.on('closed', () => {
