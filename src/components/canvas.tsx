@@ -7,7 +7,7 @@ const Canvas = (props: any) => {
 
   const canvasRef = useCanvas(frame);
   
-  return <canvas ref={canvasRef} {...rest}/>
+  return <canvas style={{width: '100%', height: '100%'}} ref={canvasRef} {...rest}/>
 }
 
 export default Canvas
