@@ -3,9 +3,18 @@ export interface FrameListener {
 }
 
 export class FrameReceiver {
+  static frameReceiver: FrameReceiver | null = null;
+  
   private listeners: Array<FrameListener> = [];
 
-  constructor() {
+  static getInstance(): FrameReceiver {
+    if (this.frameReceiver === null) {
+      this.frameReceiver = new FrameReceiver();
+    }
+    return this.frameReceiver;
+  }
+
+  private constructor() {
     window.framesAPI.handleFrame((event: any, value: any) => {
       const imgData = new ImageData(
         new Uint8ClampedArray(value.buf),

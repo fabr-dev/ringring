@@ -1,23 +1,35 @@
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 const useCanvas = (frame: any) => {
-  
+  const [height, setHeight] = useState(-1);
+  const [width, setWidth] = useState(-1);
   const canvasRef = useRef(null)
+
+  useEffect(() => {
+    if (height < 0 || width < 0) return;
+    console.log(height, width);
+  }, [height, width]);
   
   useEffect(() => {
 
     if (frame === null) return;
 
-    console.log(frame)
-    console.log(frame.rows)
+    // console.log(frame)
 
     const canvas: any = canvasRef.current;
     const context = canvas.getContext('2d');
 
-    canvas.height = canvas.offsetHeight;
-    canvas.width = canvas.offsetWidth;
+    if (height !== canvas.offsetHeight) {
+      canvas.height = canvas.offsetHeight;
+      setHeight(canvas.offsetHeight);
+    }
 
+    if (width !== canvas.offsetWidth) {
+      canvas.width = canvas.offsetWidth;
+      setWidth(canvas.offsetWidth);
+    }
+    
     // next 2 lines used to develop the resizing function, can be deleted after it is complete
     context.fillStyle = "black";
     context.fillRect(0, 0, canvas.width, canvas.height);

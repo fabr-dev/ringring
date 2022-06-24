@@ -11,7 +11,7 @@ enum STATE {
   ENDING_CALL,
 }
 
-const frameReceiver = new FrameReceiver();
+const frameReceiver = FrameReceiver.getInstance();
 
 const styles: {[key: string]: React.CSSProperties}  = {
   callButton: {
