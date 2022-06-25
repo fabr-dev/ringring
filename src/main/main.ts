@@ -15,8 +15,7 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import FrameSender from '../videoCapture/frameSender';
-import * as cv from 'opencv4nodejs';
-import capture from '../videoCapture/videoCapture';
+import VideoCapture from '../videoCapture/videoCapture';
 
 export default class AppUpdater {
   constructor() {
@@ -27,6 +26,7 @@ export default class AppUpdater {
 }
 
 const frameSender = FrameSender.getInstance();
+const vcap = new VideoCapture();
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -63,18 +63,12 @@ const createWindow = async () => {
       throw new Error('"mainWindow" is not defined');
     }
     mainWindow.show();
-    // let imageMat = cv.imread(getAssetPath('icon.png'));
-    // imageMat =
-    //   imageMat.channels === 1
-    //     ? imageMat.cvtColor(cv.COLOR_GRAY2RGBA)
-    //     : imageMat.cvtColor(cv.COLOR_BGR2RGBA);
-    // console.log(imageMat);
     frameSender.setBrowserWindow(mainWindow);
-    // setInterval(() => frameSender.sendFrame({ buf: imageMat.getData(), row: 256, col: 256 }), 200);
-    capture(frameSender);
+    vcap.start(frameSender);
   });
 
   mainWindow.on('closed', () => {
+    vcap.clearInterval();
     mainWindow = null;
   });
 
