@@ -2,6 +2,8 @@
 import useCanvas from './canvasHook'
 
 const Canvas = (props: any) => {  
+
+  
   
   const { frame, ...rest } = props;
 

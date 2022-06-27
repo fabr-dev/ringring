@@ -1,11 +1,25 @@
 import FrameSender from './frameSender';
+import { VideoScreenConfigReceiver, VideoScreenConfigListener } from './videoScreenConfigReceiver';
 
 const cv = require('opencv4nodejs');
 
 export default class VideoCapture {
   private interval: any = null;
+  private configListener: VideoScreenConfigListener | null = null;
 
-  start(frameSender: FrameSender) {
+  getConfigListener() {
+    return this.configListener;
+  }
+
+  start(frameSender: FrameSender, configReceiver: VideoScreenConfigReceiver) {
+    this.configListener = {
+      onConfig: (config: any) => {
+        console.log(config);
+      }
+    }
+    
+    configReceiver.addVideoScreenConfigListener(this.configListener);
+    
     const videoCapture = new cv.VideoCapture(0); // 0 id of the video capture device, returns a matrix of the image
 
     videoCapture.set(cv.CAP_PROP_FRAME_WIDTH, 500);

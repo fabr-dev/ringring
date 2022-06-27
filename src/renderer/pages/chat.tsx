@@ -4,7 +4,8 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import CallEndIcon from '@mui/icons-material/CallEnd';
 import { FrameListener, FrameReceiver } from 'videoCapture/frameReceiver';
-import Canvas from 'components/canvas';
+import Canvas from 'renderer/components/canvas';
+
 
 enum STATE {
   ACTIVE_CALL,

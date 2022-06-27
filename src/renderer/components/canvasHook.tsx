@@ -1,7 +1,11 @@
 
 import { useRef, useEffect, useState } from 'react';
+import { VideoScreenConfigSender } from 'videoCapture/videoScreenConfigSender';
+
+const videoScreenConfigSender = VideoScreenConfigSender.getInstance();
 
 const useCanvas = (frame: any) => {
+  // TODO: unify config variables
   const [height, setHeight] = useState(-1);
   const [width, setWidth] = useState(-1);
   const canvasRef = useRef(null)
@@ -9,13 +13,12 @@ const useCanvas = (frame: any) => {
   useEffect(() => {
     if (height < 0 || width < 0) return;
     console.log(height, width);
+    videoScreenConfigSender.sendVideoScreenConfig({height, width});
   }, [height, width]);
   
   useEffect(() => {
 
     if (frame === null) return;
-
-    // console.log(frame)
 
     const canvas: any = canvasRef.current;
     const context = canvas.getContext('2d');

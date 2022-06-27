@@ -1,5 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('framesAPI', {
-  handleFrame: (callback) => ipcRenderer.on('frame-receive', callback),
+contextBridge.exposeInMainWorld('videoAPI', {
+  handleFrame: (frame) => ipcRenderer.on('frame-receive', frame),
+  setConfig: (config) => ipcRenderer.send('video-screen-config', config),
 });
+

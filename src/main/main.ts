@@ -9,13 +9,14 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import FrameSender from '../videoCapture/frameSender';
 import VideoCapture from '../videoCapture/videoCapture';
+import { VideoScreenConfigReceiver } from '../videoCapture/videoScreenConfigReceiver';
 
 export default class AppUpdater {
   constructor() {
@@ -27,6 +28,8 @@ export default class AppUpdater {
 
 const frameSender = FrameSender.getInstance();
 const vcap = new VideoCapture();
+
+const configReceiver = VideoScreenConfigReceiver.getInstance();
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -64,11 +67,15 @@ const createWindow = async () => {
     }
     mainWindow.show();
     frameSender.setBrowserWindow(mainWindow);
-    vcap.start(frameSender);
+    vcap.start(frameSender, configReceiver);
   });
 
   mainWindow.on('closed', () => {
     vcap.clearInterval();
+    const listener = vcap.getConfigListener();
+    if (listener !== null) {
+      configReceiver.removeVideoScreenConfigListener(listener);
+    }
     mainWindow = null;
   });
 
@@ -106,6 +113,9 @@ app
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();
+    });
+    ipcMain.on('video-screen-config', (event, config) => {
+      console.log(config);
     });
   })
   .catch(console.log);

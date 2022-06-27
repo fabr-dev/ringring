@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import PhoneIcon from '@mui/icons-material/Phone';
 import { CallingDialog, IncomingCallDialog } from '../dialogs';
 import { FrameReceiver, FrameListener } from 'videoCapture/frameReceiver';
-import Canvas from '../../components/canvas';
+import Canvas from '../components/canvas';
 
 enum STATE {
   IDLE,

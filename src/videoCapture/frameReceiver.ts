@@ -15,7 +15,7 @@ export class FrameReceiver {
   }
 
   private constructor() {
-    window.framesAPI.handleFrame((event: any, value: any) => {
+    window.videoAPI.handleFrame((event: any, value: any) => {
       const imgData = new ImageData(
         new Uint8ClampedArray(value.buf),
         value.row,

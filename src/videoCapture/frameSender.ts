@@ -26,6 +26,5 @@ export default class FrameSender {
   sendFrame(frame: any) {
     if (this.browserWindow === null) return;
     this.browserWindow.webContents.send('frame-receive', frame);
-    console.log('send frame', frame);
   }
 }
